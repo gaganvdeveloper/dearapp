@@ -1,6 +1,11 @@
 package com.google.dearapp.controller;
 
+import java.util.List;
+
+import org.aspectj.weaver.ast.Literal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +28,24 @@ public class UserController {
 		return service.saveUser(user);
 	}
 	
+	@GetMapping
+	public ResponseStructure<List<User>> findAllUsers(){
+		return service.findAllUsers();
+	}
 	
+	@GetMapping("/id/{id}")
+	public ResponseStructure<User> findUserbyId(@PathVariable(name = "id") Long id){
+		return service.findUserById(id);
+	}
+	
+	@GetMapping("/gender/male")
+	public ResponseStructure<List<User>> findAllMaleUsers(){
+		return service.findAllMaleUsers();
+	}
+	
+	
+	
+//	@GetMapping("/gender/female")
 	
 	
 }

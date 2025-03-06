@@ -1,5 +1,6 @@
 package com.google.dearapp.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.google.dearapp.entity.User;
 import com.google.dearapp.repository.UserRepository;
+import com.google.dearapp.util.UserGender;
 
 @Repository
 public class UserDao {
@@ -23,5 +25,17 @@ public class UserDao {
 
 	public Optional<User> findByPhone(Long phone) {
 		return repository.findByPhone(phone);
+	}
+
+	public List<User> findAllUsers() {
+		return repository.findAll();
+	}
+
+	public Optional<User> findUserById(Long id) {
+		return repository.findById(id);
+	}
+
+	public List<User> findAllMaleUsers(UserGender gender) {
+		return repository.findByGender(gender);
 	}
 }
