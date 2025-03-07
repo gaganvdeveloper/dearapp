@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.google.dearapp.entity.User;
 import com.google.dearapp.repository.UserRepository;
 import com.google.dearapp.util.UserGender;
+import com.google.dearapp.util.UserStatus;
 
 @Repository
 public class UserDao {
@@ -37,5 +38,9 @@ public class UserDao {
 
 	public List<User> findAllMaleUsers(UserGender gender) {
 		return repository.findByGender(gender);
+	}
+
+	public List<User> findUsersByStatus(UserStatus status) {
+		return repository.findByStatus(status);
 	}
 }

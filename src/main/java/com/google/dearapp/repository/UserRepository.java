@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.google.dearapp.entity.User;
 import com.google.dearapp.util.UserGender;
+import com.google.dearapp.util.UserStatus;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 
@@ -15,5 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	Optional<User> findByPhone(Long phone);
 
 	List<User> findByGender(UserGender gender);
+
+	List<User> findByStatus(UserStatus status);
 
 }
