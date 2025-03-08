@@ -36,11 +36,15 @@ public class UserDao {
 		return repository.findById(id);
 	}
 
-	public List<User> findAllMaleUsers(UserGender gender) {
-		return repository.findByGender(gender);
-	}
-
 	public List<User> findUsersByStatus(UserStatus status) {
 		return repository.findByStatus(status);
+	}
+
+	public List<User> findByGenderAndStatus(UserGender gender, UserStatus status) {
+		return repository.findByGenderAndStatus(gender,status);
+	}
+
+	public List<User> findByGender(UserGender gender) {
+		return repository.findByGender(gender);
 	}
 }

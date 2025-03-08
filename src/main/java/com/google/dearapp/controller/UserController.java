@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.dearapp.dto.MatchingUser;
 import com.google.dearapp.entity.User;
 import com.google.dearapp.responsestructure.ResponseStructure;
 import com.google.dearapp.service.UserService;
@@ -97,13 +98,20 @@ public class UserController {
 	public ResponseStructure<User> setStatusToActive(@PathVariable(name = "id") Long id) {
 		return service.setStatusToActive(id);
 	}
-	
+
 	@GetMapping("/active/male")
-	public ResponseStructure<List<User>> findAllActicveMaleUsers(){
+	public ResponseStructure<List<User>> findAllActicveMaleUsers() {
 		return service.findAllActicveMaleUsers();
 	}
-	
-	
-	
+
+	@GetMapping("/active/female")
+	public ResponseStructure<List<User>> findAllActicveFemaleUsers() {
+		return service.findAllActicveFemaleUsers();
+	}
+
+	@GetMapping("/matches/{id}/{top}")
+	public ResponseStructure<List<MatchingUser>> findAllMatches(@PathVariable(name = "id") Long id,@PathVariable(name = "top") Integer top) {
+		return service.findAllMatches(id,top);
+	}
 
 }

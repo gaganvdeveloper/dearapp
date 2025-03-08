@@ -1,19 +1,25 @@
 package com.google.dearapp.service;
 
 import java.text.NumberFormat.Style;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.google.dearapp.dao.UserDao;
+import com.google.dearapp.dto.MatchingUser;
 import com.google.dearapp.entity.User;
 import com.google.dearapp.exceptionclasses.DuplicateEmailIdException;
 import com.google.dearapp.exceptionclasses.DuplicatePhoneException;
 import com.google.dearapp.exceptionclasses.InvalidUserIdException;
 import com.google.dearapp.responsestructure.ResponseStructure;
+import com.google.dearapp.util.SortByAgeDifferenceAsc;
 import com.google.dearapp.util.UserGender;
 import com.google.dearapp.util.UserStatus;
 
@@ -78,7 +84,7 @@ public class UserService {
 
 	public ResponseStructure<List<User>> findAllMaleUsers() {
 
-		List<User> maleUsers = userDao.findAllMaleUsers(UserGender.MALE);
+		List<User> maleUsers = userDao.findByGender(UserGender.MALE);
 
 		ResponseStructure<List<User>> structure = new ResponseStructure<>();
 		structure.setStatus(HttpStatus.OK.value());
@@ -88,7 +94,7 @@ public class UserService {
 	}
 
 	public ResponseStructure<List<User>> findAllFemaleUsers() {
-		List<User> femaleUsers = userDao.findAllMaleUsers(UserGender.FEMALE);
+		List<User> femaleUsers = userDao.findByGender(UserGender.FEMALE);
 		ResponseStructure<List<User>> structure = new ResponseStructure<>();
 		structure.setStatus(HttpStatus.OK.value());
 		structure.setMessage("All Female Users Found Successfully");
@@ -212,13 +218,84 @@ public class UserService {
 	}
 
 	public ResponseStructure<List<User>> findAllActicveMaleUsers() {
+		List<User> users = userDao.findByGenderAndStatus(UserGender.MALE, UserStatus.ACTIVE);
+		return new ResponseStructure<List<User>>(HttpStatus.OK.value(), "All ACTIVE MALE Users Found successfully",
+				users);
+	}
 
-//		Optional<> = userDao.findByGenderAnsStatus();
+	public ResponseStructure<List<User>> findAllActicveFemaleUsers() {
+		List<User> users = userDao.findByGenderAndStatus(UserGender.FEMALE, UserStatus.ACTIVE);
+		return new ResponseStructure<List<User>>(HttpStatus.OK.value(), "All ACTIVE FEMALE Users Found successfully",
+				users);
+
+	}
+
+	public ResponseStructure<List<MatchingUser>> findAllMatches(Long id, Integer top) { // 11 ---> 10,9,8
+		Optional<User> optional = userDao.findUserById(id);
+		if (optional.isEmpty()) {
+			throw new InvalidUserIdException("Invalid User Id : " + id + ", Unable to find best matches");
+		}
+
+		User user = optional.get();
+
+		UserGender gender = user.getGender();
+
+//		System.out.println(gender.equals(UserGender.MALE)?UserGender.FEMALE:UserGender.MALE);
+
+		List<User> users = new ArrayList<>();
+
+		if (gender.equals(UserGender.MALE))
+			users = userDao.findByGender(UserGender.FEMALE);
+		else
+			users = userDao.findByGender(UserGender.MALE);
+
+//		printCollection(users);
+
+		List<MatchingUser> matchingUsers = new ArrayList<>();
+
+		for (User u : users) {
+
+			MatchingUser mu = new MatchingUser();
+
+			mu.setName(u.getName());
+			mu.setAge(u.getAge());
+			mu.setIntrest(u.getInterest());
+			mu.setAgeDifference(Math.abs(user.getAge() - u.getAge()));
+			mu.setMatchingIntrestCount(countIntrest(user.getInterest(), u.getInterest()));
+			mu.setGender(u.getGender());
+			matchingUsers.add(mu);
+
+		}
+
+//		printCollection(matchingUsers);
+		
+		
+		Collections.sort(matchingUsers, new SortByAgeDifferenceAsc());
+		
+//		printCollection(matchingUsers);
+		
+		
+		matchingUsers = matchingUsers.stream().limit(top).collect(Collectors.toList());
+		
+		printCollection(matchingUsers);
+		
 		
 		
 		return null;
 	}
-	
-	
+
+	private int countIntrest(List<String> list1, List<String> list2) {
+		int c = 0;
+		for (String s : list1) {
+			if (list2.contains(s))
+				c++;
+		}
+		return c;
+	}
+
+	private void printCollection(Collection c) {
+		for (Object o : c)
+			System.out.println(o);
+	}
 
 }

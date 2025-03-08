@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
 	List<User> findByStatus(UserStatus status);
 
+	List<User> findByGenderAndStatus(UserGender gender, UserStatus status);
+
 }
