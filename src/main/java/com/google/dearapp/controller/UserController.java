@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.dearapp.dto.MatchedUser;
 import com.google.dearapp.entity.User;
 import com.google.dearapp.responsestructure.ResponseStructure;
 import com.google.dearapp.service.UserService;
@@ -45,7 +46,11 @@ public class UserController {
 	
 	
 	
-//	@GetMapping("/gender/female")
+	@GetMapping("/match/{id}/{top}")
+	public ResponseStructure<List<MatchedUser>> findBestMatches(@PathVariable(name = "id") Long id, @PathVariable(name = "top") Integer top){
+		return service.findBestMatches(id,top);
+	}
+ 	
 	
 	
 }

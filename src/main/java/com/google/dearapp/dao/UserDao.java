@@ -38,4 +38,8 @@ public class UserDao {
 	public List<User> findAllMaleUsers(UserGender gender) {
 		return repository.findByGender(gender);
 	}
+
+	public List<User> findByGender(UserGender gender) {
+		return repository.findByGender(gender);
+	}
 }
